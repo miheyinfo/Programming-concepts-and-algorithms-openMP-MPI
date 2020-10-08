@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.17)
+project(Programming_concepts_and_algorithms_openMP_MPI)
+
+set(CMAKE_CXX_STANDARD 14)
+
+add_executable(Programming_concepts_and_algorithms_openMP_MPI main.cpp)
