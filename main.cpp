@@ -7,14 +7,6 @@ using namespace cv;
 
 
 int main() {
-    const char pathSeparator = std::filesystem::path::preferred_separator;
-    // Search Lenna
-    auto pathToLenna = std::filesystem::current_path()
-            .string()
-            .append(&pathSeparator)
-            .append("..")
-            .append(&pathSeparator)
-            .append("lenna.png");
     // Read the image file
     Mat sourceImage = imread(pathToLenna);
     // Check for failure
