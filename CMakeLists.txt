@@ -12,6 +12,7 @@ if (OPENMP_FOUND)
 endif()
 
 ###### OpenCV #####
+find_package(OpenCV REQUIRED)
 if(WIN32)
     # Find OpenCV, you may need to set OpenCV_DIR variable
     # to the absolute path to the directory containing OpenCVConfig.cmake file
@@ -22,9 +23,8 @@ else()
     # add libs you need
     set(OpenCV_LIBS opencv_core opencv_imgproc opencv_highgui opencv_imgcodecs)
 endif()
-find_package(OpenCV REQUIRED)
 
 add_executable(Programming_concepts_and_algorithms_openMP_MPI main.cpp)
 
 # linking
-target_link_libraries(Programming_concepts_and_algorithms_openMP_MPI stdc++fs ${OpenCV_LIBS})
+target_link_libraries(Programming_concepts_and_algorithms_openMP_MPI ${OpenCV_LIBS})
