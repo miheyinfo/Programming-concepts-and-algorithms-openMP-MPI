@@ -1,12 +1,27 @@
 #include <iostream>
-#include <filesystem>
 #include <omp.h>
+
+#ifdef _WIN32
+#include <opencv2/opencv.hpp>
+#else
 #include <opencv4/opencv2/opencv.hpp>
+#endif
+
 
 using namespace cv;
 
 
 int main() {
+
+    const std::string pathSeparator =
+    #ifdef _WIN32
+        "\\";
+    #else
+        "/";
+    #endif
+
+    // Search Lenna
+    std::string pathToLenna = "." + pathSeparator + ".." + pathSeparator + "lenna.png";
     // Read the image file
     Mat sourceImage = imread(pathToLenna);
     // Check for failure
