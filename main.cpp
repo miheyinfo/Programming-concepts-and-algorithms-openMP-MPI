@@ -21,9 +21,9 @@ int main() {
     #endif
 
     // Search Lenna
-    std::string pathToLenna = "." + pathSeparator + ".." + pathSeparator + "lenna.png";
+    std::string pathToLena = "." + pathSeparator + ".." + pathSeparator + "lenna.png";
     // Read the image file
-    Mat sourceImage = imread(pathToLenna);
+    Mat sourceImage = imread(pathToLena);
     // Check for failure
     if (sourceImage.empty()) {
         printf("Could not open or find the image");
