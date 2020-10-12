@@ -1,6 +1,7 @@
 #include <iostream>
 #include <omp.h>
 #include <chrono>
+#include <mpi/mpi.h>
 #ifdef _WIN32
 #include <opencv2/opencv.hpp>
 #else
@@ -25,7 +26,10 @@ double filter[filterHeight][filterWidth] =
 double factor = 1.0 / 13.0;
 double bias = 0.0;
 
-int main() {
+int main(int args, char** argv) {
+
+    MPI_Init(&args, &argv);
+    MPI_Finalize();
 
     const std::string pathSeparator =
     #ifdef _WIN32
@@ -35,7 +39,7 @@ int main() {
     #endif
 
     // Search Lenna
-    std::string pathToLena = "." + pathSeparator + ".." + pathSeparator + "lenna.png";
+    std::string pathToLena = ".." + pathSeparator + "lenna.png";
     // Read the image file
     Mat sourceImage = imread(pathToLena);
     // Check for failure
@@ -74,7 +78,7 @@ int main() {
 
     //apply the filter and parallelize among threads
     auto startTimeGaussianBlur = std::chrono::high_resolution_clock::now();
-    #pragma omp parallel for
+    #pragma omp parallel for default(none) collapse(2) shared(factor, bias, width, height, sourceImage, filter, filteredImage)
     for(int x = 0; x < width; x++)
         for(int y = 0; y < height; y++)
         {

@@ -28,12 +28,16 @@ message(STATUS "    config: ${OpenCV_DIR}")
 message(STATUS "    version: ${OpenCV_VERSION}")
 message(STATUS "    libraries: ${OpenCV_LIBS}")
 message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")
-
-# add libs you need
 message(STATUS "OpenCV_INCLUDE_DIRS = ${OpenCV_INCLUDE_DIRS}")
 message(STATUS "OpenCV_LIBS = ${OpenCV_LIBS}")
+
+######  MPI #####
+find_package(MPI REQUIRED)
+
+target_include_directories(Programming_concepts_and_algorithms_openMP_MPI PRIVATE ${MPI_CXX_INCLUDE_PATH})
+target_compile_options(Programming_concepts_and_algorithms_openMP_MPI PRIVATE ${MPI_CXX_COMPILE_FLAGS})
 
 add_executable(Programming_concepts_and_algorithms_openMP_MPI main.cpp)
 
 # linking
-target_link_libraries(Programming_concepts_and_algorithms_openMP_MPI ${OpenCV_LIBS})
+target_link_libraries(Programming_concepts_and_algorithms_openMP_MPI ${MPI_CXX_LIBRARIES} ${MPI_CXX_LINK_FLAGS} ${OpenCV_LIBS})
