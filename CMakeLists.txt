@@ -32,12 +32,27 @@ message(STATUS "OpenCV_INCLUDE_DIRS = ${OpenCV_INCLUDE_DIRS}")
 message(STATUS "OpenCV_LIBS = ${OpenCV_LIBS}")
 
 ######  MPI #####
-find_package(MPI REQUIRED)
+if(WIN32)
+    # add this folders to path
+    set(INC_DIR  "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Include")
+    set(LINK_DIR  "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\lib\\x64")
+    include_directories(${INC_DIR})
+    link_directories(${LINK_DIR})
+else()
+    target_include_directories(Programming_concepts_and_algorithms_openMP_MPI PRIVATE ${MPI_CXX_INCLUDE_PATH})
+    target_compile_options(Programming_concepts_and_algorithms_openMP_MPI PRIVATE ${MPI_CXX_COMPILE_FLAGS})
+endif()
 
-target_include_directories(Programming_concepts_and_algorithms_openMP_MPI PRIVATE ${MPI_CXX_INCLUDE_PATH})
-target_compile_options(Programming_concepts_and_algorithms_openMP_MPI PRIVATE ${MPI_CXX_COMPILE_FLAGS})
+find_package(MPI REQUIRED)
+if(MPI_FOUND)
+    message("Using MPI")
+endif(MPI_FOUND)
+include_directories(${MPI_INCLUDE_PATH})
+set(CMAKE_C_FLAGS "${CMAKE_FLAGS} ${MPI_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MPI_CXX_FLAGS}")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${MPI_EXE_LINKER_FLAGS}")
 
 add_executable(Programming_concepts_and_algorithms_openMP_MPI main.cpp)
 
 # linking
-target_link_libraries(Programming_concepts_and_algorithms_openMP_MPI ${MPI_CXX_LIBRARIES} ${MPI_CXX_LINK_FLAGS} ${OpenCV_LIBS})
+target_link_libraries(Programming_concepts_and_algorithms_openMP_MPI ${LINK_LIB} ${MPI_CXX_LIBRARIES} ${MPI_CXX_LINK_FLAGS} ${OpenCV_LIBS})

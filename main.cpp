@@ -1,11 +1,12 @@
 #include <iostream>
 #include <omp.h>
 #include <chrono>
-#include <mpi/mpi.h>
 #ifdef _WIN32
 #include <opencv2/opencv.hpp>
+#include <mpi.h>
 #else
 #include <opencv4/opencv2/opencv.hpp>
+#include <mpi/mpi.h>
 #endif
 
 
