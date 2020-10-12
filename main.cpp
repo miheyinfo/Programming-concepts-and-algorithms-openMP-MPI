@@ -1,6 +1,6 @@
 #include <iostream>
 #include <omp.h>
-
+#include <chrono>
 #ifdef _WIN32
 #include <opencv2/opencv.hpp>
 #else
@@ -50,6 +50,7 @@ int main() {
     // create blank grayscale Mat image object
     Mat grayscale(height, width, CV_8U, Scalar(0));
 
+    auto startTimeGreyScale = std::chrono::high_resolution_clock::now();
     #pragma omp parallel for collapse(2) default(none) shared(width, height, sourceImage, grayscale)
     for (int i = 0; i < width; ++i) {
         for (int j = 0; j < height; ++j) {
@@ -65,11 +66,14 @@ int main() {
             grayscale.at<unsigned char>(i,j) = saturate_cast<unsigned char>(greyScaleColor);
         }
     }
+    auto endTimeGreyScale = std::chrono::high_resolution_clock::now();
+    auto durationGreyScale = std::chrono::duration_cast<std::chrono::milliseconds>(endTimeGreyScale - startTimeGreyScale ).count();
 
     //load the image into the buffer
     Mat filteredImage = sourceImage.clone();
 
     //apply the filter and parallelize among threads
+    auto startTimeGaussianBlur = std::chrono::high_resolution_clock::now();
     #pragma omp parallel for
     for(int x = 0; x < width; x++)
         for(int y = 0; y < height; y++)
@@ -95,6 +99,8 @@ int main() {
             pixel[0] = min(max(int(factor * blue + bias), 0), 255);
             filteredImage.at<Vec3b>(x,y) = pixel;
         }
+    auto endTimeGaussianBlur = std::chrono::high_resolution_clock::now();
+    auto durationGaussianBlur = std::chrono::duration_cast<std::chrono::milliseconds>(endTimeGaussianBlur - startTimeGaussianBlur ).count();
 
     namedWindow("Gaussian Blur 5x5", 1);
     imshow("Gaussian Blur 5x5", filteredImage);
@@ -104,8 +110,10 @@ int main() {
 
     namedWindow("Original Image", 1);
     imshow("Original Image", sourceImage);
-
+    std::cout << durationGreyScale << " ms for Grayscale\n";
+    std::cout << durationGaussianBlur << " ms for Gaussian Blur";
     waitKey();
+
 
     return 0;
 }
