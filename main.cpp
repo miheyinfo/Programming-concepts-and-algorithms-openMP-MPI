@@ -69,7 +69,8 @@ int main() {
     //load the image into the buffer
     Mat filteredImage = sourceImage.clone();
 
-    //apply the filter
+    //apply the filter and parallelize among threads
+    #pragma omp parallel for
     for(int x = 0; x < width; x++)
         for(int y = 0; y < height; y++)
         {
