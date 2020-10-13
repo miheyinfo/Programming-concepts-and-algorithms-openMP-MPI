@@ -38,10 +38,7 @@ if(WIN32)
     set(LINK_DIR  "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\lib\\x64")
     include_directories(${INC_DIR})
     link_directories(${LINK_DIR})
-else()
-    target_include_directories(Programming_concepts_and_algorithms_openMP_MPI PRIVATE ${MPI_CXX_INCLUDE_PATH})
-    target_compile_options(Programming_concepts_and_algorithms_openMP_MPI PRIVATE ${MPI_CXX_COMPILE_FLAGS})
-endif()
+endif(WIN32)
 
 find_package(MPI REQUIRED)
 if(MPI_FOUND)
@@ -55,4 +52,4 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${MPI_EXE_LINKER_FLAGS}")
 add_executable(Programming_concepts_and_algorithms_openMP_MPI main.cpp)
 
 # linking
-target_link_libraries(Programming_concepts_and_algorithms_openMP_MPI ${LINK_LIB} ${MPI_CXX_LIBRARIES} ${MPI_CXX_LINK_FLAGS} ${OpenCV_LIBS})
+target_link_libraries(Programming_concepts_and_algorithms_openMP_MPI ${MPI_CXX_LIBRARIES} ${MPI_CXX_LINK_FLAGS} ${OpenCV_LIBS})
