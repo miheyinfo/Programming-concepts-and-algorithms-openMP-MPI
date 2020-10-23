@@ -49,6 +49,12 @@ int main(int args, char** argv) {
     //image properties
     int imageProperties[4];
 
+
+    ///////----------------
+    //  Use this command to run with MPI
+    //  Programming-concepts-and-algorithms-openMP-MPI\cmake-build-debug>mpiexec -n 4 Programming_concepts_and_algorithms_openMP_MPI.exe
+    //
+    //////-----------------
     MPI_Init(&args, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &id);
 
