@@ -49,7 +49,7 @@ set(CMAKE_C_FLAGS "${CMAKE_FLAGS} ${MPI_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MPI_CXX_FLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${MPI_EXE_LINKER_FLAGS}")
 
-add_executable(Programming_concepts_and_algorithms_openMP_MPI main.cpp)
+add_executable(Programming_concepts_and_algorithms_openMP_MPI main.cpp ConvolutionEffects.cpp ConvolutionEffects.h)
 
 # linking
 target_link_libraries(Programming_concepts_and_algorithms_openMP_MPI ${MPI_CXX_LIBRARIES} ${MPI_CXX_LINK_FLAGS} ${OpenCV_LIBS})

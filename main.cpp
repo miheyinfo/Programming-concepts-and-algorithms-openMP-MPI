@@ -4,13 +4,17 @@
 #ifdef _WIN32
 #include <opencv2/opencv.hpp>
 #include <mpi.h>
+#include "ConvolutionEffects.h"
+
 #else
 #include <opencv4/opencv2/opencv.hpp>
 #include <mpi/mpi.h>
+#include "ConvolutionEffects.h"
+
+
 #endif
-
-
 using namespace cv;
+
 using namespace std;
 
 const std::string pathSeparator =
@@ -19,22 +23,6 @@ const std::string pathSeparator =
 #else
 "/";
 #endif
-
-#define filterWidth 5
-#define filterHeight 5
-
-double filter[filterHeight][filterWidth] =
-        {
-                0, 0, 1, 0, 0,
-                0, 1, 1, 1, 0,
-                1, 1, 1, 1, 1,
-                0, 1, 1, 1, 0,
-                0, 0, 1, 0, 0,
-        };
-
-double factor = 1.0 / 13.0;
-double bias = 0.0;
-
 
 const int MAXBYTES=8*1024*1024;
 uchar buffer[MAXBYTES];
@@ -133,36 +121,8 @@ int main(int args, char** argv) {
 
     }
     if (id == 2) {
-        //load the image into the buffer
-        Mat filteredImage = sourceImage.clone();
-
-        //apply the filter and parallelize among threads
-        auto startTimeGaussianBlur = std::chrono::high_resolution_clock::now();
-        #pragma omp parallel for default(none) collapse(2) shared(factor, bias, width, height, sourceImage, filter, filteredImage)
-        for(int x = 0; x < width; x++) {
-            for(int y = 0; y < height; y++) {
-                double red = 0.0, green = 0.0, blue = 0.0;
-
-                //multiply every value of the filter with corresponding image pixel
-                for(int filterY = 0; filterY < filterHeight; filterY++) {
-                    for(int filterX = 0; filterX < filterWidth; filterX++) {
-                        int imageX = (x - filterWidth / 2 + filterX + width) % width;
-                        int imageY = (y - filterHeight / 2 + filterY + height) % height;
-                        auto pixel = sourceImage.at<Vec3b>(imageX,imageY);
-                        red += pixel[1] * filter[filterY][filterX];
-                        green += pixel[2] * filter[filterY][filterX];
-                        blue += pixel[0] * filter[filterY][filterX];
-                    }
-                }
-
-                //truncate values smaller than zero and larger than 255
-                auto pixel = filteredImage.at<Vec3b>(x,y);
-                pixel[1] = min(max(int(factor * red + bias), 0), 255);
-                pixel[2] = min(max(int(factor * green + bias), 0), 255);
-                pixel[0] = min(max(int(factor * blue + bias), 0), 255);
-                filteredImage.at<Vec3b>(x,y) = pixel;
-            }
-        }
+        ConvolutionEffects convolutionEffects(sourceImage);
+        Mat filteredImage = convolutionEffects.makeConvolutionMagic(EffectType::Emboss,1,128);
         // show result
         namedWindow("Gaussian Blur 5x5", 1);
         imshow("Gaussian Blur 5x5", filteredImage);
