@@ -124,8 +124,22 @@ int main(int args, char** argv) {
         ConvolutionEffects convolutionEffects(sourceImage);
         Mat filteredImage = convolutionEffects.makeConvolutionMagic(EffectType::Emboss,1,128);
         // show result
-        namedWindow("Gaussian Blur 5x5", 1);
-        imshow("Gaussian Blur 5x5", filteredImage);
+        namedWindow("Emboss", 1);
+        imshow("Emboss", filteredImage);
+    }
+    if (id == 3) {
+        ConvolutionEffects convolutionEffects(sourceImage);
+        Mat filteredImage = convolutionEffects.makeConvolutionMagic(EffectType::MotionBlur,1/9.0,0);
+        // show result
+        namedWindow("Motion", 1);
+        imshow("Motion", filteredImage);
+    }
+    if (id == 4) {
+        ConvolutionEffects convolutionEffects(sourceImage);
+        Mat filteredImage = convolutionEffects.makeConvolutionMagic(EffectType::Sharpen,1.0,0);
+        // show result
+        namedWindow("Sharpen - Draw Effect", 1);
+        imshow("Sharpen - Draw Effect", filteredImage);
     }
 
     MPI_Finalize();

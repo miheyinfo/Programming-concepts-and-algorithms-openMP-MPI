@@ -32,13 +32,13 @@ message(STATUS "OpenCV_INCLUDE_DIRS = ${OpenCV_INCLUDE_DIRS}")
 message(STATUS "OpenCV_LIBS = ${OpenCV_LIBS}")
 
 ######  MPI #####
-if(WIN32)
+if(WIN64)
     # add this folders to path
     set(INC_DIR  "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Include")
     set(LINK_DIR  "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\lib\\x64")
     include_directories(${INC_DIR})
     link_directories(${LINK_DIR})
-endif(WIN32)
+endif(WIN64)
 
 find_package(MPI REQUIRED)
 if(MPI_FOUND)

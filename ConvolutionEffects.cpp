@@ -44,9 +44,17 @@ vector<vector<int>> ConvolutionEffects::getFilterForEffectType(EffectType effect
     } else if (effectType == EffectType::Emboss) {
         _filterHeight = 3;
         _filterWidth = 3;
-        return {{-1, -1,  0},
-                {-1,  0,  1},
+        return {{-1, -1, 0},
+                {-1, 0,  1},
                 {0,  1,  1}};
+    } else if (effectType == EffectType::Sharpen) {
+        _filterHeight = 3;
+        _filterWidth = 3;
+        return {
+                {1, 1,  1},
+                {1, -7, 1},
+                {1, 1,  1}
+        };
     }
 
 

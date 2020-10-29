@@ -18,7 +18,8 @@ enum EffectType {
     GaussianBlur3x3,
     GaussianBlur5x5,
     MotionBlur,
-    Emboss
+    Emboss,
+    Sharpen
 };
 
 class ConvolutionEffects {
