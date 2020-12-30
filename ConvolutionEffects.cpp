@@ -6,8 +6,8 @@
 
 ConvolutionEffects::ConvolutionEffects(Mat &sourceImage) {
     _sourceImage = sourceImage.clone();
-    _width = _sourceImage.cols;
-    _height = _sourceImage.rows;
+    _width = _sourceImage.rows;
+    _height = _sourceImage.cols;
 }
 
 vector<vector<int>> ConvolutionEffects::getFilterForEffectType(EffectType effectType) {
