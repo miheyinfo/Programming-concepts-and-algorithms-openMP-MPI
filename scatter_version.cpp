@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
     int rank, size;
 
     // the full image:
-    Mat full_image;
+    Mat full_image, source_image;
 
     // image properties:
     int image_properties[4];
@@ -54,6 +54,7 @@ int main(int argc, char **argv) {
         string pathToLena = ".." + pathSeparator + "lenna.png";
         // Read the image file
         full_image = imread(pathToLena);
+        source_image = full_image.clone();
         // Check for failure
         if (full_image.empty()) {
             printf("Could not open or find the image");
@@ -101,13 +102,13 @@ int main(int argc, char **argv) {
     executionTime = MPI_Wtime();
 
     ConvolutionEffects convolutionEffects(part_image);
-    Mat filteredImage = convolutionEffects.makeConvolutionMagic(EffectType::MotionBlur,1.0 / 9.0,0.);
+    Mat filteredImage = convolutionEffects.makeConvolutionMagic(EffectType::GaussianBlur5x5,1.0 / 256.0, 0.0);
     part_image = filteredImage;
 
     // imshow("image in process #" + to_string(rank), part_image);
-
-    waitKey(0); // will need to press a key in EACH process...
-    destroyAllWindows();
+//
+//    waitKey(0); // will need to press a key in EACH process...
+//    destroyAllWindows();
 
     // save? (each process will save their own image, with different names)
     // imwrite("image_slice_" + to_string(rank) + ".jpg", part_image);
@@ -128,6 +129,7 @@ int main(int argc, char **argv) {
     MPI_Reduce(&executionTime, &avgTime, 1, MPI_DOUBLE, MPI_SUM, 0,MPI_COMM_WORLD);
 
     if (rank == 0) {
+        imshow("original image", source_image);
         imshow("gathered image", full_image);
 
         waitKey(0); // will need to press a key in EACH process...
