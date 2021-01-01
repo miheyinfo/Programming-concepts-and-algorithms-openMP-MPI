@@ -42,6 +42,10 @@ int main(int argc, char **argv) {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
+    // start measuring execution time
+    double executionTime, minTime, maxTime, avgTime;
+
+
     // load the image ONLY in the master process #0:
     if (rank == 0) {
 
@@ -94,11 +98,13 @@ int main(int argc, char **argv) {
     // a horizontal slice of the image
     // we can do something with it...
 
+    executionTime = MPI_Wtime();
+
     ConvolutionEffects convolutionEffects(part_image);
-    Mat filteredImage = convolutionEffects.makeConvolutionMagic(EffectType::Emboss,1.0,128.0);
+    Mat filteredImage = convolutionEffects.makeConvolutionMagic(EffectType::MotionBlur,1.0 / 9.0,0.);
     part_image = filteredImage;
 
-    imshow("image in process #" + to_string(rank), part_image);
+    // imshow("image in process #" + to_string(rank), part_image);
 
     waitKey(0); // will need to press a key in EACH process...
     destroyAllWindows();
@@ -112,13 +118,24 @@ int main(int argc, char **argv) {
                full_image.data, send_size, MPI_UNSIGNED_CHAR,
                0, MPI_COMM_WORLD);
 
-    if (rank == 0) {
-        cout << "Process #0 received the gathered image" << endl;
+    executionTime = MPI_Wtime() - executionTime;
 
+    // compute max, min, and average timing statistics
+    MPI_Reduce(&executionTime, &maxTime, 1, MPI_DOUBLE,MPI_MAX, 0, MPI_COMM_WORLD);
+
+    MPI_Reduce(&executionTime, &minTime, 1, MPI_DOUBLE, MPI_MIN, 0,MPI_COMM_WORLD);
+
+    MPI_Reduce(&executionTime, &avgTime, 1, MPI_DOUBLE, MPI_SUM, 0,MPI_COMM_WORLD);
+
+    if (rank == 0) {
         imshow("gathered image", full_image);
 
         waitKey(0); // will need to press a key in EACH process...
         destroyAllWindows();
+
+        avgTime /= size;
+
+        printf("Min: %lf Max: %lf Avg: %lf\n", minTime, maxTime, avgTime);
     }
 
     // finalize MPI
