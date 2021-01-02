@@ -69,11 +69,12 @@ Mat ConvolutionEffects::makeConvolutionMagic(EffectType effectType, double facto
     uint width = _width;
     uint height = _height;
     vector<vector<int>> filter = getFilterForEffectType(effectType);
+    omp_set_num_threads(32);
     //apply the filter and parallelize among threads
 #pragma omp parallel for collapse(2) default(none) shared(factor, bias, width, height, sourceImage, filter, filteredImage)
     for (int x = 0; x < width; x++) {
         for (int y = 0; y < height; y++) {
-            // printf("Thread number is %d\n", omp_get_thread_num());
+            //printf("Thread number is %d\n", omp_get_thread_num());
             double red = 0.0, green = 0.0, blue = 0.0;
 
             //multiply every value of the filter with corresponding image pixel

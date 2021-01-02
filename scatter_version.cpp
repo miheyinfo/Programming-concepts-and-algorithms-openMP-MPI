@@ -129,15 +129,13 @@ int main(int argc, char **argv) {
     MPI_Reduce(&executionTime, &avgTime, 1, MPI_DOUBLE, MPI_SUM, 0,MPI_COMM_WORLD);
 
     if (rank == 0) {
-        imshow("original image", source_image);
-        imshow("gathered image", full_image);
+//        imshow("original image", source_image);
+//        imshow("gathered image", full_image);
+//
+//        waitKey(0); // will need to press a key in EACH process...
+//        destroyAllWindows();
 
-        waitKey(0); // will need to press a key in EACH process...
-        destroyAllWindows();
-
-        avgTime /= size;
-
-        printf("Min: %lf Max: %lf Avg: %lf\n", minTime, maxTime, avgTime);
+        printf("%d, %lf, %lf, %lf, %lf\n", size, minTime,maxTime, avgTime/size, avgTime);
     }
 
     // finalize MPI
